@@ -137,11 +137,6 @@ export async function dibujarAfiche(url: string): Promise<HTMLCanvasElement> {
   ctx.stroke();
   ctx.drawImage(await dibujarQR(url, qrSize), qx, qy);
 
-  // URL
-  ctx.fillStyle = "#6b6b6b";
-  ctx.font = '500 32px "Barlow", sans-serif';
-  ctx.fillText(url.replace(/^https?:\/\//, "").replace(/\/$/, ""), W / 2, qy + qrSize + 92);
-
   // Logos
   const [l1, l2] = await Promise.all([cargarImagen("/img/logo-1stchoice.webp"), cargarImagen("/img/pronature-logo.webp")]);
   const h1 = 130;
@@ -151,7 +146,7 @@ export async function dibujarAfiche(url: string): Promise<HTMLCanvasElement> {
   const gap = 60;
   const total = w1 + gap + w2;
   const lx = (W - total) / 2;
-  const ly = H - 175;
+  const ly = H - 210;
   ctx.drawImage(l1, lx, ly, w1, h1);
   ctx.drawImage(l2, lx + w1 + gap, ly + (h1 - h2) / 2, w2, h2);
 
