@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import QRCode from "qrcode";
+import { dibujarAfiche, dibujarQR } from "./qrArte";
 
 type P = {
   id: number;
@@ -321,12 +321,12 @@ function CodigoQR() {
   const [url, setUrl] = useState("");
   const [png, setPng] = useState("");
   const [copiado, setCopiado] = useState(false);
+  const [bajando, setBajando] = useState(false);
 
   useEffect(() => {
     const u = `${window.location.origin}/`;
     setUrl(u);
-    QRCode.toDataURL(u, { width: 1024, margin: 2, errorCorrectionLevel: "M", color: { dark: "#1d1d1b", light: "#ffffff" } })
-      .then(setPng);
+    dibujarQR(u, 1200).then((c) => setPng(c.toDataURL("image/png")));
   }, []);
 
   async function copiar() {
@@ -337,14 +337,28 @@ function CodigoQR() {
     } catch {}
   }
 
+  async function descargarAfiche() {
+    setBajando(true);
+    try {
+      const c = await dibujarAfiche(url);
+      const a = document.createElement("a");
+      a.href = c.toDataURL("image/png");
+      a.download = "afiche-registrate-y-gana.png";
+      a.click();
+    } finally {
+      setBajando(false);
+    }
+  }
+
   return (
     <section className="card qr">
       <h2>Código QR</h2>
       <p className="sub">La gente lo escanea y llega directo al registro.</p>
-      {png ? <img src={png} alt={`QR hacia ${url}`} width={220} height={220} /> : <div style={{ height: 230 }} />}
+      {png ? <img src={png} alt={`QR hacia ${url}`} width={240} height={240} /> : <div style={{ height: 250 }} />}
       <p className="url">{url}</p>
       <div className="acciones">
         <a className="btn btn-rojo" href={png} download="qr-registrate-y-gana.png">Descargar QR</a>
+        <button className="btn" onClick={descargarAfiche} disabled={bajando}>{bajando ? "Generando…" : "Descargar afiche"}</button>
         <button className="btn" onClick={copiar}>{copiado ? "¡Copiado!" : "Copiar link"}</button>
         <a className="btn" href="/" target="_blank" rel="noreferrer">Ver página</a>
       </div>
