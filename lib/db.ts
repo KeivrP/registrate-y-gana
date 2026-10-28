@@ -10,7 +10,13 @@ declare global {
 }
 
 function connectionString() {
-  const url = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+  // Acepta el nombre estándar y los que crea Vercel cuando Neon se conecta con prefijo.
+  const url =
+    process.env.DATABASE_URL ||
+    process.env.POSTGRES_URL ||
+    process.env.DATABASE_URL_DATABASE_URL ||
+    process.env.DATABASE_URL_POSTGRES_URL ||
+    Object.entries(process.env).find(([k, v]) => /_(DATABASE_URL|POSTGRES_URL)$/.test(k) && v)?.[1];
   if (!url) throw new Error("Falta la variable de entorno DATABASE_URL");
   return url;
 }
