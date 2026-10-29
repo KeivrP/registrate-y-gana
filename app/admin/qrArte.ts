@@ -1,6 +1,7 @@
 import QRCode from "qrcode";
 
 const ROJO = "#dc0032";
+const GRIS = "#8c8c8c";
 const TINTA = "#1d1d1b";
 
 function cargarImagen(src: string) {
@@ -52,11 +53,11 @@ export async function dibujarQR(url: string, size = 1200): Promise<HTMLCanvasEle
     }
   }
 
-  // Ojos: anillo rojo redondeado + centro oscuro
+  // Ojos: anillo gris redondeado + centro oscuro
   for (const [r, c] of [[0, 0], [0, n - 7], [n - 7, 0]]) {
     const x = off + c * cell;
     const y = off + r * cell;
-    ctx.fillStyle = ROJO;
+    ctx.fillStyle = GRIS;
     rectRedondo(ctx, x, y, 7 * cell, 7 * cell, cell * 2.2);
     ctx.fill();
     ctx.fillStyle = "#fff";
@@ -73,8 +74,8 @@ export async function dibujarQR(url: string, size = 1200): Promise<HTMLCanvasEle
   ctx.fillStyle = "#fff";
   rectRedondo(ctx, cx, cx, caja, caja, caja * 0.22);
   ctx.fill();
-  const logo = await cargarImagen("/img/logo-1stchoice.webp");
-  const pad = caja * 0.07;
+  const logo = await cargarImagen("/img/huella.png");
+  const pad = caja * 0.16;
   const w = caja - pad * 2;
   const h = (w * logo.height) / logo.width;
   ctx.drawImage(logo, cx + pad, cx + (caja - h) / 2, w, h);
@@ -131,7 +132,7 @@ export async function dibujarAfiche(url: string): Promise<HTMLCanvasElement> {
   rectRedondo(ctx, qx - 30, qy - 30, qrSize + 60, qrSize + 60, 48);
   ctx.fill();
   ctx.restore();
-  ctx.strokeStyle = ROJO;
+  ctx.strokeStyle = GRIS;
   ctx.lineWidth = 8;
   rectRedondo(ctx, qx - 30, qy - 30, qrSize + 60, qrSize + 60, 48);
   ctx.stroke();
